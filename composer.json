@@ -1,0 +1,30 @@
+{
+    "name": "tirex/phtmx",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nick Chi",
+            "email": "nickchiYT@yandex.ru"
+        }
+    ],
+    "require": {
+        "doctrine/orm": "^3",
+        "doctrine/dbal": "^4",
+        "doctrine/annotations": "*",
+        "symfony/yaml": "*",
+        "symfony/cache": "^7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/App", 
+            "": [
+                "src/App/Core", 
+                "src/App/Core/Form",
+                "src/App/Controller", 
+                "src/App/Interface", 
+                "src/App/Model", 
+                "src/App/View"
+            ]
+        }
+    }
+}

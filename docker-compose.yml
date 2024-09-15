@@ -1,0 +1,34 @@
+version: '3'
+services:
+  php_composer:
+    image: composer
+    volumes:
+      - ./:/app
+    command: composer install --ignore-platform-reqs 
+  php_db:
+    image: mysql:5.7
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: phtmx
+      MYSQL_DATABASE: phtmx_start
+      MYSQL_USER: phtmx
+      MYSQL_PASSWORD: phtmx
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    ports:
+      - "43306:3306"
+  php_web:
+    image: wyveo/nginx-php-fpm:php82
+    volumes:
+      - ./:/app
+      - ./logs/error.log:/dev/stderr
+      - ./logs/access.log:/dev/stdout
+      - ./logs/php-fpm.log:/var/log/php-fpm.log
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+volumes:
+  mysql-volume:
