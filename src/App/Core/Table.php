@@ -98,6 +98,7 @@ class Table {
         if (!isset($this->actionButtons)) $this->actionButtons = new ActionButtons();
         $this->actionButtons->setId($id);
         $this->actionButtons->setModelName($this->getModelName());
+        $this->actionButtons->createButtons();
         return $this->actionButtons->getHTML();
     }
     

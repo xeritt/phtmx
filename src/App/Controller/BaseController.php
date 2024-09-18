@@ -7,6 +7,7 @@
 class BaseController {
     
     //public $modelName = 'Book';
+    public $isDoctrine = false;
     
     public function getModelName() {
         return Url::getModel();
@@ -27,7 +28,11 @@ class BaseController {
         //$form = new FormBuilder($book, "Book/new");
         //var_dump($item);
         //exit();
-        $form = new FormBuilder($item, Url::go($this->getModelName()."/new"));//"index.php?page=Book&action=new");
+        if ($this->isDoctrine){
+            $form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/new"));
+        } else {
+            $form = new FormBuilder($item, Url::go($this->getModelName()."/new"));//"index.php?page=Book&action=new");
+        }    
         e::o ($form->getForm());
         $submit = $form->getSubmit("Добавить");
         $submit->setDialogclose('myDialog');
@@ -37,14 +42,24 @@ class BaseController {
     }
     
     public function newAction() {
-        
-        $item = $this->newItem();
-        $arr = Model::getParamsPrivates($item, HTML::postParams());
-        $arr["id"] = uniqid();
-        $data  = new Data($this->getModelFileName());
-        $ids = $data->readDataFile();
-        $data->add($arr);
-        $data->saveDataFile();
+        if ($this->isDoctrine){
+            try {
+                $item = Model::loadModel($this->getModelName(), HTML::postParams());
+                $entityManager = Config::getEntityManager();
+                $entityManager->persist($item);
+                $entityManager->flush();
+            } catch (Throwable $e) {
+                    echo 'Something happens: '.$e->getMessage();
+            }                
+        } else {
+            $item = $this->newItem();
+            $arr = Model::getParamsPrivates($item, HTML::postParams());
+            $arr["id"] = uniqid();            
+            $data  = new Data($this->getModelFileName());
+            $ids = $data->readDataFile();
+            $data->add($arr);
+            $data->saveDataFile();
+        }    
         
         //IndexController::indexAction();
         $this->indexAction();
@@ -100,13 +115,26 @@ class BaseController {
     }
     
     public function updateAction() {
-        $data  = new Data($this->getModelFileName());
-        $ids = $data->readDataFile();
-       
-        $item = $this->newItem();
-        $arr = Model::getParamsPrivates($item, HTML::postParams());
-        $data->update($arr);
-        $data->saveDataFile();
+        if ($this->isDoctrine){
+            try {
+                    $entityManager = Config::getEntityManager();
+                    $item = Model::loadModel($this->getModelName(), HTML::postParams());
+                    $entityManager = Config::getEntityManager();
+                    $entityManager->persist($item);
+                    $entityManager->flush();
+                } catch (Throwable $e) {
+                    echo 'Something happens: '.$e->getMessage();
+                }
+            
+        } else {
+            $data  = new Data($this->getModelFileName());
+            $ids = $data->readDataFile();
+
+            $item = $this->newItem();
+            $arr = Model::getParamsPrivates($item, HTML::postParams());
+            $data->update($arr);
+            $data->saveDataFile();
+        }
         
         $this->indexAction();
         //IndexController::indexAction();
@@ -116,12 +144,24 @@ class BaseController {
         $id = HTML::get("id");
         //echo "Edit id=".$id;//."---".self::getModelName().'+++'.Url::getModel();
         //exit();
-        $data  = new Data($this->getModelFileName());
-        //$ids = $data->readDataFile();
-        $byId = $data->readDataFileById();
-        $obj = $byId[$id];//$data->getById($id);
-        $item = Model::loadModel($this->getModelName(), $obj);//new Book($id, $obj["name"], $obj["article"]);
-        $form = new FormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
+        if ($this->isDoctrine){
+            $entityManager = Config::getEntityManager();
+            $item = $entityManager->find($this->getModelName(), $id);
+
+                if ($item === null) {
+                    echo $this->getModelName()."id=".$id." No found.\n";
+                    //exit(1);
+                } 
+            $form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
+        } else {
+            $data  = new Data($this->getModelFileName());
+            //$ids = $data->readDataFile();
+            $byId = $data->readDataFileById();
+            $obj = $byId[$id];//$data->getById($id);
+            $item = Model::loadModel($this->getModelName(), $obj);//new Book($id, $obj["name"], $obj["article"]);
+            $form = new FormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
+        }
+        
         $form->setLegend("Edit id=".$id);
         e::o ($form->getForm());
         
@@ -138,14 +178,30 @@ class BaseController {
     
     public function delAction() {
         $id = HTML::get("id");
-        $data  = new Data($this->getModelFileName());
-        $ids = $data->readDataFile();
-        $res = $data->del($id);
-        if ($res){
-            echo "Del id=".print_r($res, true);
-            $data->saveDataFile();
+        if ($this->isDoctrine){
+            try{
+                $entityManager = Config::getEntityManager();
+                $item = $entityManager->find($this->getModelName(), $id);
+
+                if ($item === null) {
+                    //echo "No product found.\n";
+                    e::o ($this->getModelName()."id=".$id." No found.\n");
+                    exit(1);
+                }
+                $entityManager->remove($item);
+                $entityManager->flush();
+            } catch (Throwable $e) {
+                    echo 'Something happens: '.$e->getMessage();
+            }
+        } else {
+            $data  = new Data($this->getModelFileName());
+            $ids = $data->readDataFile();
+            $res = $data->del($id);
+            if ($res){
+                echo "Del id=".print_r($res, true);
+                $data->saveDataFile();
+            }
         }
-        
         $this->indexAction();
         //IndexController::indexAction();        
     }

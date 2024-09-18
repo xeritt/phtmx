@@ -1,13 +1,18 @@
 <?php
 
 //use App\Core\Model\Product;
+//use Product;
 /** Продукт */
 class ProductController extends BaseController{
+    
+    public function __construct() {
+        $this->isDoctrine = true;
+    }
 
     public function getTable() {
         $html = '';
         echo "???";
-        //$product = new App\Core\Model\Product();
+        $product = new Product();
         echo "!!!!";
         $entityManager = Config::getEntityManager();
         $productRepository = $entityManager->getRepository('Product');

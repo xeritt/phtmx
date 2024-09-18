@@ -21,6 +21,7 @@
                 "src/App/Core", 
                 "src/App/Core/Form",
                 "src/App/Controller", 
+                "src/App/Annotation", 
                 "src/App/Interface", 
                 "src/App/Model", 
                 "src/App/View"

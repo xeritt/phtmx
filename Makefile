@@ -32,7 +32,7 @@ install.logs:
 	mkdir logs
 	touch logs/error.log
 	touch logs/access.log
-        touch logs/php-fpm.log
+	touch logs/php-fpm.log
 
 copy_env:
 	cp configs/env.php.dist configs/env.php

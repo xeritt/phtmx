@@ -109,7 +109,22 @@ class Model {
             
             //$comment = $prop->getDocComment();
             //$headers[$prop->getName()] = trim($comment, "\**/");
-            $headers[$prop->getName()] = $annotation->label;
+            if (isset($annotation->label)) 
+                $headers[$prop->getName()] = $annotation->label;
+        }
+        return $headers;
+    }
+    
+    static public function getAttributesComents($modelName) {
+        
+        $props = self::getPrivates($modelName);
+        $headers = [];
+        $attrs = new Attributes();
+        foreach ($props as $prop) {
+            $comment = $attrs->getAttributeOptionValue($prop, $attrs->COLUMN_ATTR_NAME, 'comment');
+            if ('' != $comment){
+                $headers[$prop->getName()] = $comment;
+            }
         }
         return $headers;
     }
@@ -134,7 +149,7 @@ class Model {
             $prop->setAccessible(true);
             $name = $prop->getName();
             if (isset($params[$name])){
-                    $propertyModelName = $prop->getType();
+                $propertyModelName = ltrim($prop->getType(), '?');
                 //if (!in_array($propertyModelName, $types)){
                 if (!Php::inTypes($propertyModelName)){
                     
@@ -151,7 +166,13 @@ class Model {
                         $prop->setValue($model, $propertyModel);
                     }    
                 } else {
-                    $prop->setValue($model, $params[$name]);
+                    //echo $params[$name];
+                    
+                    try {
+                        $prop->setValue($model, $params[$name]);
+                    } catch (Throwable $e) {
+                        echo 'Something happens: '.$e->getMessage();
+                    }
                 }
             }
         }

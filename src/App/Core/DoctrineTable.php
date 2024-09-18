@@ -167,7 +167,8 @@ class DoctrineTable extends Table{
         }
         echo "Footer2";
         $html .= $this->getTableTag();//"<table>";
-        $headers = Model::getAnnotationLabels($this->getModelName());//Model::getHeaders($this->modelName);
+        //$headers = Model::getAnnotationLabels($this->getModelName());//Model::getHeaders($this->modelName);
+        $headers = Model::getAttributesComents($this->getModelName());//Model::getHeaders($this->modelName);
         $this->setHeaders($headers);
         $html .= $this->getTableHeaders();
         /*
@@ -190,7 +191,7 @@ class DoctrineTable extends Table{
             foreach ($props as $prop) {
             //foreach ($keys_row as $arkey => $field) {
                 $fieldName = $prop->getName();
-                if (in_array($fieldName, $this->ignoreFieldNames)) continue;
+                if (in_array($fieldName, $this->getIgnoreFieldNames())) continue;
                 $td = "";//"<td>";    
                 $type = $prop->getType();
                 //echo '['.$type.']'.$fieldName;
