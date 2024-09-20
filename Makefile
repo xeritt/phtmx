@@ -21,6 +21,15 @@ create: docker.install install.logs
 	@echo "composer install"
 	@echo "php bin/doctrine orm:schema-tool:create"
 
+orm.create:
+	php bin/doctrine orm:schema-tool:create
+
+orm.update:
+	php bin/doctrine orm:schema-tool:update --force
+
+orm.sql:
+	php bin/doctrine orm:schema-tool:update --dump-sql
+
 install: install.logs copy_env docker.install
 	@echo "Install success. Run command [make setup]"
 
@@ -54,14 +63,6 @@ docker.stop:
 module:
 	./vendor/bin/luya module/create
 
-install.flash:
-	cp -r -f views/layouts/main.php $(project_name_)/views/layouts/
-	cp -r -f views/layouts/flash.php $(project_name_)/views/layouts/
-	@echo "Install flash success."
-
-install.smtp:
-	docker run --rm -it -p 3000:80 -p 2525:25 rnwood/smtp4dev
-	@echo "Install smtp4dev success.[Web localhost:3000 smtp 2525]"
 test:
 	@echo "Test done."
 

@@ -137,7 +137,7 @@ class FormBuilder {
     public function getInput($reflect, $prop, $typeInput, $value) {
         $types = Php::getTypes();
         $html = '';
-        $type = $prop->getType();
+        $type = ltrim($prop->getType(), '?');
         if (!in_array($type, $types)){
             $item = Model::create($type);
             if (Model::isInput($item)){
@@ -152,7 +152,7 @@ class FormBuilder {
                 if ($value != null) {
                     $value = $value->getId();
                 }
-                $html .= $this->getModelSelect($prop->getType(), $prop->getName(), $value);    
+                $html .= $this->getModelSelect(ltrim($prop->getType(), ''), $prop->getName(), $value);    
             }
             
         } else{
@@ -163,6 +163,7 @@ class FormBuilder {
     
     
     public function getModelSelect($modelName, $propertyName, $value) {
+        $modelName = ltrim($modelName, '?');
         $data  = new Data($modelName.".json");
         $ids = $data->readDataFile();
         $html = '';

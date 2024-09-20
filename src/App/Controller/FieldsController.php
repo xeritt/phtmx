@@ -55,7 +55,10 @@ class FieldsController extends BaseController{
         $ids = $data->readDataFile();
         $table = new Table($ids["data"]);
         $table->setModelName($modelName);
-        $table->setActionButtons(new ActionModelsButtons());
+        $buttons = new ActionModelsButtons();
+        $buttons->createButtons();
+        $table->setActionButtons($buttons);
+        //$table->createButtons
         //$table->setStyle("color:red; border: 1px solid red;");
         $table->setClass("table");
         //echo "#*##*#*#*##*";

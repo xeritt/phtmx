@@ -72,6 +72,8 @@ class ActionButtons implements IComponent, IActionButtons{
         $html .= $del->getHTML();
          * 
          */
+        
+        
         $html = '';
         foreach ($this->getButtons() as $key => $button) {
             $html .= $button->getHTML();

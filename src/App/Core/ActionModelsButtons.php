@@ -6,6 +6,33 @@ class ActionModelsButtons implements IComponent, IActionButtons{
     private $modelName;
     private $dialogTarget = "myDialog";
     
+    private $buttons = [];
+    
+    public function createButtons() {
+        $id = $this->id;
+        $getModelName = $this->modelName;
+        
+        $up = new Button("Up", $getModelName, Url::go($getModelName."/up",["id"=>$id]));
+        $down = new Button("Down", $getModelName, Url::go($getModelName."/down",["id"=>$id]));
+        $edit = new Button("Edit", $this->dialogTarget, Url::go($getModelName."/edit",["id"=>$id]), 'loadDialog');
+        $del = new Button("Del", $getModelName, Url::go($getModelName."/del",["id"=>$id]));
+        $del->setConfirm("Вы хотите удалить id=".$id);
+
+        $this->buttons = [
+            'up'=>$up,
+            'down'=>$down,
+            'edit'=>$edit, 
+            'del'=>$del
+        ];
+        
+    }
+    public function getButtons() {
+        return $this->buttons;
+    }
+
+    public function setButtons($buttons): void {
+        $this->buttons = $buttons;
+    }
     /*public function __construct($id, $modelName, $dialogTarget = "myDialog") {
         $this->id = $id;
         $this->modelName = $modelName;
@@ -38,6 +65,7 @@ class ActionModelsButtons implements IComponent, IActionButtons{
    }
 
    public function getHTML() {
+        /*
         $id = $this->id;
         $getModelName = $this->modelName;
         
@@ -50,6 +78,12 @@ class ActionModelsButtons implements IComponent, IActionButtons{
         $html .= $down->getHTML();
         $html .= $edit->getHTML();
         $html .= $del->getHTML();
+        */
+        $html = '';
+        foreach ($this->getButtons() as $key => $button) {
+            $html .= $button->getHTML();
+        }
+        
         return $html;
     }
 }

@@ -134,7 +134,10 @@ class Table {
         }*/
         //if (!isset($curData)) $html .= "Err dat";
         //echo $id;
+        
         $id = $row[$field];
+        print_r($ids);
+        echo $id.$type;
         $item = $data->getById($id);
         //print_r($item);
         
@@ -178,7 +181,7 @@ class Table {
             foreach ($keys_row as $arkey => $field) {
                 if (in_array($field, $this->ignoreFieldNames)) continue;
                 $td = "";//"<td>";    
-                $type = $props[$field]->getType();
+                $type = ltrim($props[$field]->getType(), '?');
                 if (!Php::inTypes($type)){
                     $item = Model::create($type);
                     if (Model::isInput($item)){ //$item instanceof IInput){

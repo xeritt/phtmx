@@ -193,7 +193,7 @@ class DoctrineTable extends Table{
                 $fieldName = $prop->getName();
                 if (in_array($fieldName, $this->getIgnoreFieldNames())) continue;
                 $td = "";//"<td>";    
-                $type = $prop->getType();
+                $type = ltrim($prop->getType(), '?');
                 //echo '['.$type.']'.$fieldName;
                 if (!Php::inTypes($type) && $type!=''){
                     //echo $fieldName."!!";
