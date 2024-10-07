@@ -25,4 +25,7 @@ class Config {
         self::$entityManager = $entityManager;
     }
     
+    static public $layout_path = 'src/App/Layout/';
+    static public $view_path = 'src/App/View/';
+    
 }

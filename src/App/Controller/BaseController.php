@@ -205,4 +205,11 @@ class BaseController {
         $this->indexAction();
         //IndexController::indexAction();        
     }
+    
+    public function mainAction() {
+        $view = new View();
+        $title = 'Title Base Controller';
+        $html = $view->render('Client/main', []);
+        echo $view->renderLayout('default/main', ['title'=>$title, 'content'=>$html]);
+    }
 }
