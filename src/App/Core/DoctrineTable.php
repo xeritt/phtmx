@@ -212,10 +212,11 @@ class DoctrineTable extends Table{
                             $td .= $row->$m();//$row[$field];//.'?????'.$props[$field]->getValue();
                         }    
                     } else {
+                        
                         if ($type == 'DateTime') {
                             $m = 'get'.ucfirst($fieldName);
                             //var_dump($row);
-                            $td .= $row->$m()->format('d/m/Y'); //$row[$field];//.'?????'.$props[$field]->getValue();
+                            $td .= $row->$m()->format('d.m.Y H:i:s'); //$row[$field];//.'?????'.$props[$field]->getValue();
                         } else {
                             $ps = Model::getPrivates($type);
                             $fName = $ps[1]->getName();  
@@ -224,7 +225,14 @@ class DoctrineTable extends Table{
                             $uid = "div_".uniqid();//$row->getId() + mt_rand(0, 255);
                             //$td .= HTML::tag('', 'div', ['id'=>$uid]);
                             
-                            $edit = new Button("Загрузка...", $uid, Url::go($type."/modelValue",["id"=>$row->getId(), "fieldName"=>$fName]), 'loadDynamicText');
+                            $isEntity = Model::isEntity($type);    
+                            if ($isEntity){
+                                $m = 'get'.ucfirst($fieldName);
+                                $idLoad = $row->$m()->getId();
+                            } else {
+                                $idLoad = $row->getId();
+                            }
+                            $edit = new Button("Загрузка...", $uid, Url::go($type."/modelValue",["id"=>$idLoad, "fieldName"=>$fName]), 'loadDynamicText');
                             $content = $edit->getHTML();
                             //$content = "<script>alert('Hello');loadDynamic('#".$uid."', go('".$type."/modelValue')+'".'&id='.$row->getId().'&fieldName='.$fName."', 0);</script>";
                             $td .= HTML::tag($content, 'div', ['id'=>$uid]);

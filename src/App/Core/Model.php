@@ -147,31 +147,35 @@ class Model {
         return $item;
     }
     
-    static public function loadModel($modelName, $params) {
+    static public function loadModel($modelName, $params, $mode = 'new') {
         
         //$str = '$model = new '.$modelName.'();';
         //eval($str);
         //echo $modelName."!@!@!@!@";
-        $model = Model::create($modelName);
+        $entityManager = Config::getEntityManager();
+        if ($mode == 'edit'){
+            $model = $entityManager->find($modelName, $params['id']);
+            //$model = Model::create($modelName);
+        } else {
+            $model = Model::create($modelName);
+        }
         //$model = new $modelName();
         $props = self::getPrivates($model);
         //$types = Php::getTypes();
-        
-        $entityManager = Config::getEntityManager();
-        print_r($props);
+        //print_r($props);
         foreach ($props as $prop) {
             $prop->setAccessible(true);
             $name = $prop->getName();
-            echo "Name: $name <br />";
+            //echo "Name: $name <br />";
             $propertyModelName = ltrim($prop->getType(), '?');
-            echo "[propertyModelName=".$propertyModelName."].<br />";
+            //echo "[propertyModelName=".$propertyModelName."].<br />";
             
                            
                 //if (!in_array($propertyModelName, $types)){
             if (!Php::inTypes($propertyModelName)){
                 $isEntity = self::isEntity($propertyModelName);
                 if ($isEntity){
-                        echo "Oo this is entity $name";
+                    //echo "Oo this is entity $name";
 
                     $attrs = new Attributes();
                     $fieldName = $attrs->getAttributeValue($prop, $attrs->JOINCOLUMN_ATTR_NAME, 'name');
@@ -180,9 +184,9 @@ class Model {
                     //$entityManager->flush();
                     $prop->setValue($model, $propertyModel);
                 } else if (isset($params[$name])){       
-                    echo "!@@@";
+                    //echo "!@@@";
                     $input = Model::create($propertyModelName);
-                    echo "%%%%%%";
+                    //echo "%%%%%%";
                     if (Model::isInput($input)){
                         $input->setValue($params[$name]);
                         $prop->setValue($model, $input);
@@ -201,7 +205,6 @@ class Model {
                 } 
             } else { //Если обычные типы php
                     //echo $params[$name];
-                    
                     try {
                         $prop->setValue($model, $params[$name]);
                     } catch (Throwable $e) {

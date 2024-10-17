@@ -45,7 +45,7 @@ class BaseController {
         if ($this->isDoctrine){
             try {
                 $item = Model::loadModel($this->getModelName(), HTML::postParams());
-                var_dump($item);
+                //var_dump($item);
                 //$item = $this->newItem();
                 //$arr = Model::getParamsPrivates($item, HTML::postParams());
                 $entityManager = Config::getEntityManager();
@@ -121,10 +121,11 @@ class BaseController {
         if ($this->isDoctrine){
             try {
                     $entityManager = Config::getEntityManager();
-                    
-                    $item = Model::loadModel($this->getModelName(), HTML::postParams());
-                    $entityManager = Config::getEntityManager();
+                    $item = Model::loadModel($this->getModelName(), HTML::postParams(), 'edit');
+                    //var_dump($item);
+                    //$entityManager = Config::getEntityManager();
                     $entityManager->persist($item);
+                    //$entityManager->merge($item);
                     $entityManager->flush();
                 } catch (Throwable $e) {
                     e::o ('Something happens: '.$e->getMessage());
