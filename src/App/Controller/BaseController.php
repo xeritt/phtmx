@@ -45,6 +45,9 @@ class BaseController {
         if ($this->isDoctrine){
             try {
                 $item = Model::loadModel($this->getModelName(), HTML::postParams());
+                var_dump($item);
+                //$item = $this->newItem();
+                //$arr = Model::getParamsPrivates($item, HTML::postParams());
                 $entityManager = Config::getEntityManager();
                 $entityManager->persist($item);
                 $entityManager->flush();
@@ -118,12 +121,13 @@ class BaseController {
         if ($this->isDoctrine){
             try {
                     $entityManager = Config::getEntityManager();
+                    
                     $item = Model::loadModel($this->getModelName(), HTML::postParams());
                     $entityManager = Config::getEntityManager();
                     $entityManager->persist($item);
                     $entityManager->flush();
                 } catch (Throwable $e) {
-                    echo 'Something happens: '.$e->getMessage();
+                    e::o ('Something happens: '.$e->getMessage());
                 }
             
         } else {
@@ -209,7 +213,7 @@ class BaseController {
     public function mainAction() {
         $view = new View();
         $title = 'Title Base Controller';
-        $html = $view->render('Client/main', []);
+        $html = $view->render('default/main', ['model'=>$this->getModelName()]);
         echo $view->renderLayout('default/main', ['title'=>$title, 'content'=>$html]);
     }
 }

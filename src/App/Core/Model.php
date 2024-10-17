@@ -1,5 +1,8 @@
 <?php
+
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManager;
+//use Doctrine\Common\Util\ClassUtils;
 
 /**
  * Description of Model
@@ -11,6 +14,11 @@ class Model {
          return $item instanceof IModelSource;
     }
     
+    /**
+     * Если наследуется от IInput для поля ввода
+     * @param IInput $item
+     * @return type
+     */
     static public function isInput($item) {
          return $item instanceof IInput;
     }
@@ -122,6 +130,9 @@ class Model {
         $attrs = new Attributes();
         foreach ($props as $prop) {
             $comment = $attrs->getAttributeOptionValue($prop, $attrs->COLUMN_ATTR_NAME, 'comment');
+            if ($comment == ''){
+                $comment = $attrs->getAttributeOptionValue($prop, $attrs->JOINCOLUMN_ATTR_NAME, 'comment');
+            }
             if ('' != $comment){
                 $headers[$prop->getName()] = $comment;
             }
@@ -131,7 +142,7 @@ class Model {
     
     static public function create($name) {
         $str = '$item = new '. ltrim($name, '?').'();';
-        echo $str;
+        //echo $str;
         eval($str);
         return $item;
     }
@@ -140,32 +151,55 @@ class Model {
         
         //$str = '$model = new '.$modelName.'();';
         //eval($str);
+        //echo $modelName."!@!@!@!@";
         $model = Model::create($modelName);
         //$model = new $modelName();
         $props = self::getPrivates($model);
         //$types = Php::getTypes();
-
+        
+        $entityManager = Config::getEntityManager();
+        print_r($props);
         foreach ($props as $prop) {
             $prop->setAccessible(true);
             $name = $prop->getName();
-            if (isset($params[$name])){
-                $propertyModelName = ltrim($prop->getType(), '?');
+            echo "Name: $name <br />";
+            $propertyModelName = ltrim($prop->getType(), '?');
+            echo "[propertyModelName=".$propertyModelName."].<br />";
+            
+                           
                 //if (!in_array($propertyModelName, $types)){
-                if (!Php::inTypes($propertyModelName)){
-                    
+            if (!Php::inTypes($propertyModelName)){
+                $isEntity = self::isEntity($propertyModelName);
+                if ($isEntity){
+                        echo "Oo this is entity $name";
+
+                    $attrs = new Attributes();
+                    $fieldName = $attrs->getAttributeValue($prop, $attrs->JOINCOLUMN_ATTR_NAME, 'name');
+                    $propertyModel = $entityManager->find($propertyModelName, $params[$fieldName]);
+                    //$entityManager->persist($item);
+                    //$entityManager->flush();
+                    $prop->setValue($model, $propertyModel);
+                } else if (isset($params[$name])){       
+                    echo "!@@@";
                     $input = Model::create($propertyModelName);
+                    echo "%%%%%%";
                     if (Model::isInput($input)){
                         $input->setValue($params[$name]);
                         $prop->setValue($model, $input);
                     } else {
-                    //echo "Start=".$propertyModelName."????";
-                        $data  = new Data($propertyModelName.".json");
-                        $ids = $data->readDataFile();
-                        $obj = $data->getById($params[$name]);
-                        $propertyModel  = Model::loadModel($propertyModelName, $obj);//new Author($obj['id'], $obj['fname'], '', '');//
-                        $prop->setValue($model, $propertyModel);
+                        if ($propertyModelName == 'DateTime'){
+                            //$date->format('Y-m-d H:i:s');
+                            $prop->setValue($model, $input);
+                        } else {
+                            $data  = new Data($propertyModelName.".json");
+                            $ids = $data->readDataFile();
+                            $obj = $data->getById($params[$name]);
+                            $propertyModel  = Model::loadModel($propertyModelName, $obj);//new Author($obj['id'], $obj['fname'], '', '');//
+                            $prop->setValue($model, $propertyModel);
+                        }
                     }    
-                } else {
+                } 
+            } else { //Если обычные типы php
                     //echo $params[$name];
                     
                     try {
@@ -173,9 +207,30 @@ class Model {
                     } catch (Throwable $e) {
                         echo 'Something happens: '.$e->getMessage();
                     }
-                }
             }
         }
         return $model; 
     }
+    
+    static public function loadDoctrineModelById($modelName, $id) {
+        $entityManager = Config::getEntityManager();
+        $item = $entityManager->find($modelName, $id);
+        return $item;
+    }
+    
+    /**
+    * @param string|object $class
+    *
+    * @return boolean
+    */
+   static public function isEntity($class) {
+       $em = Config::getEntityManager();
+       
+       if(is_object($class)){
+           //$class = ClassUtils::getClass($class);
+           $class = $em->getClassMetadata(get_class($class))->getName();
+       }
+       return ! $em->getMetadataFactory()->isTransient($class);
+   }
+   
 }

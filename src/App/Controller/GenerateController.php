@@ -47,6 +47,7 @@ class GenerateController extends BaseController{
         //$this->tail();
         $this->format($fileControllerDest, htmlspecialchars($res));
         
+        /*
         $fileModel = $tplPath."model.html";
         $fileModelDest = strtolower($obj["name"]).".html";
         $textModel = file_get_contents($fileModel);
@@ -55,7 +56,7 @@ class GenerateController extends BaseController{
         chmod($fileModelDest, 0775);
         //echo htmlspecialchars($res);
         $this->format($fileModelDest, htmlspecialchars($res));
-
+        */
         $fileModel = $tplPath."model.js";
         $fileModelDest = "js/".strtolower($obj["name"]).".js";
         $textModel = file_get_contents($fileModel);

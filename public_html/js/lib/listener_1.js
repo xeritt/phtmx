@@ -32,7 +32,8 @@ let classNames = {
   addLoadDialogAll: '.loadDialog',
   addLinkButtonAll: '.linkButton',
   addActionCloseAll: '.actionClose',
-  addActionSubmitAll: '.actionSubmit'
+  addActionSubmitAll: '.actionSubmit',
+  addLoadDynamicTextAll: '.loadDynamicText'
 };
 export function setClassNames(val){ classNames = val; }
 export function getClassNames(){ return classNames; }
@@ -49,6 +50,8 @@ export function addLoadAll() {
     addLoadDialogAll(names.addLoadDialogAll);
     addActionCloseAll();
     addActionSubmitAll();
+    
+    addLoadDynamicTextAll();
 }
 
 /** Запускает по интервалу сканирование классов
@@ -152,7 +155,7 @@ export function addLoadText(itemId, container, url, timeout = 0) {
  * @returns {undefined}
  */
 export async function loadDynamic(container, url, timeout = 0) {
-    log('Start Dyn Load');
+    log('Start Dyn Load to container id=' + container);
     let div = document.querySelector(container);
     if (!div) {
         console.error('No container ' + container + ' to load');
@@ -545,5 +548,44 @@ export function addActionSubmitAll(className = '.actionSubmit') {
         
         //addLoadDialog(item.id, item.dataset.target, item.dataset.url, item.dataset.timeout);
     });
+}
+
+/*
+ <div id="loadDynamicText_id" 
+ class="loadDynamicText" 
+ data-url="test.html" 
+ data-target="htmx"
+ data-timeout="0"
+ >Load htmx</button>
+ <div id="htmx"></div>
+ */
+export function addLoadDynamicTextAll(className = '.loadDynamicText') {
+    //log('addLoadTextAll start');
+    let loadText = document.querySelectorAll(className);
+    log(loadText);
+    loadText.forEach(async (item) => {
+        log('loadDynamicText id= ' + item.id);
+        //loadDynamic('#' + item.dataset.target, item.dataset.url, item.dataset.timeout);
+        //addLoadText(item.id, item.dataset.target, item.dataset.url, item.dataset.timeout);
+        //setRequestOnLoad(false);
+        let div = document.querySelector('#' + item.dataset.target);
+        if (!div) {
+            console.error('No container ' + container + ' to load');
+            return;
+        }
+        //await sleep(item.dataset.timeout);
+        fetch(item.dataset.url)
+            //.then((response) => response.json())
+            .then((response) => response.text())
+            .then((data) => {
+                div.innerHTML = data;
+                requestOnLoad = true;
+                item.classList.remove(className.replace('.', ''));
+            });
+    });
+    
+    
+    //setRequestOnLoad(false);
+    
 }
 

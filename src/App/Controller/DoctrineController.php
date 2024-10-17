@@ -34,5 +34,20 @@ class DoctrineController extends BaseController{
         $html .= HTML::br();
         return $html;
     }
+    
+    public function modelValueAction() {
+        //return 'Ok';
+        if (!Access::ifLogin()) { 
+            return HTML::link("login.html", "Login");
+        }    
+        $type = $this->getModelName();//HTML::get('type');
+        $id = HTML::get('id');
+        $fieldName = HTML::get('fieldName');
+        
+        $obj = Model::loadDoctrineModelById($type, $id);
+        $getter = 'get'.ucfirst($fieldName);
+        $val = $obj->$getter();
+        return $val;
+    }
 
 }

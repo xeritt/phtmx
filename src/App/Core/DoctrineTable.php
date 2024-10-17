@@ -120,6 +120,12 @@ class DoctrineTable extends Table{
         return $html;
     } */   
     
+    public function getValue($fieldName, $row) {
+      $m = 'get'.ucfirst($fieldName);
+      $value = $row->$m();   
+      return $value;
+    }
+    
     public function getModelValue(&$datas, $field, $row, $type) {
         $keys_datas = array_keys($datas);
         $curData = null;
@@ -161,11 +167,11 @@ class DoctrineTable extends Table{
             self::$isStyleLoad = true;
         }*/
         $css = new CSS();
-        echo "Footer1";
+        //echo "Footer1";
         if (!CSS::isLoad("DoctrineTable")){
             $html .= CSS::load("DoctrineTable", $this->getStyle()); 
         }
-        echo "Footer2";
+        //echo "Footer2";
         $html .= $this->getTableTag();//"<table>";
         //$headers = Model::getAnnotationLabels($this->getModelName());//Model::getHeaders($this->modelName);
         $headers = Model::getAttributesComents($this->getModelName());//Model::getHeaders($this->modelName);
@@ -202,11 +208,39 @@ class DoctrineTable extends Table{
                         if (Model::isModelSource($item)){
                             $this->modelSource($td, $row, $field);
                         } else {
-                            $m = 'get'.ucfirst($fieldName).'()';
-                            $td .= $row->$m;//$row[$field];//.'?????'.$props[$field]->getValue();
+                            $m = 'get'.ucfirst($fieldName);
+                            $td .= $row->$m();//$row[$field];//.'?????'.$props[$field]->getValue();
                         }    
                     } else {
-                        $td .= $this->getModelValue($datas, $field, $row, $type);
+                        if ($type == 'DateTime') {
+                            $m = 'get'.ucfirst($fieldName);
+                            //var_dump($row);
+                            $td .= $row->$m()->format('d/m/Y'); //$row[$field];//.'?????'.$props[$field]->getValue();
+                        } else {
+                            $ps = Model::getPrivates($type);
+                            $fName = $ps[1]->getName();  
+                            //$uid = uniqid();
+                            //$uid = hex2bin($uid);
+                            $uid = "div_".uniqid();//$row->getId() + mt_rand(0, 255);
+                            //$td .= HTML::tag('', 'div', ['id'=>$uid]);
+                            
+                            $edit = new Button("Загрузка...", $uid, Url::go($type."/modelValue",["id"=>$row->getId(), "fieldName"=>$fName]), 'loadDynamicText');
+                            $content = $edit->getHTML();
+                            //$content = "<script>alert('Hello');loadDynamic('#".$uid."', go('".$type."/modelValue')+'".'&id='.$row->getId().'&fieldName='.$fName."', 0);</script>";
+                            $td .= HTML::tag($content, 'div', ['id'=>$uid]);
+                            
+                            
+                            /*
+                            
+                            //$obj = $this->getValue($fieldName, $row);
+                            $obj = Model::loadDoctrineModelById($type, $row->getId());
+                            //print_r($obj);
+                            $getter = 'get'.ucfirst($fName);
+                            $td .= $obj->$getter(); //$this->getValue($fieldName, $row)->getId();
+                            //$td .= $this->getModelValue($datas, $field, $row, $type);
+                             * 
+                             */
+                        }    
                     }
                 } else {
                     $m = 'get'.ucfirst($fieldName);

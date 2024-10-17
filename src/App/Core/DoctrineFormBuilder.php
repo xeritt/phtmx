@@ -119,6 +119,9 @@ class DoctrineFormBuilder {
             } 
             //$comment = $prop->getDocComment();
             $comment = $attrs->getAttributeOptionValue($prop, $attrs->COLUMN_ATTR_NAME, 'comment');
+            if ($comment == ''){
+                $comment = $attrs->getAttributeOptionValue($prop, $attrs->JOINCOLUMN_ATTR_NAME, 'comment');
+            }
             $row .= '<label for="'.$prop->getName().'">';
             if (isset($comment)){
                 $row .= trim($comment, "\**/");
@@ -143,21 +146,39 @@ class DoctrineFormBuilder {
         $html = '';
         $type = ltrim($prop->getType(), '?');
         if (!in_array($type, $types)){
-            echo "typeeeee===".$type;
+            //echo "typeeeee===".$type;
             $item = Model::create($type);
+            //echo "1";
+            //var_dump($item);
             if (Model::isInput($item)){
                 if (Model::isModelSource($item)) {
                     $item->setModelName($reflect->getName()); 
                 }    
+                //echo "2";
                 $name = $prop->getName();
                 $item->setAttrs(["id"=>$name, "name"=>$name]);
                 if ($value != null) $item->setValue($value->getValue());
                 $html .= $item->getHTML();
+            } if ($type == 'DateTime'){
+                //$html .= '???';
+                $value  = date('Y-m-d H:i:s');
+                $html .= '<input type="'.$typeInput.'" id="'.$prop->getName().'" name="'.$prop->getName().'" value="'.$value.'" />';
             } else {
+                //echo "3";
                 if ($value != null) {
                     $value = $value->getId();
                 }
-                $html .= $this->getModelSelect($prop->getType(), $prop->getName(), $value);    
+                if (Model::isEntity($item)){
+                    //$reflect = new ReflectionClass($item);
+                    //$props   = $reflect->getProperties(ReflectionProperty::IS_PRIVATE);
+                    //$legend = $reflect->getDocComment();
+                    $attrs = new Attributes();
+                    $fieldName = $attrs->getAttributeValue($prop, $attrs->JOINCOLUMN_ATTR_NAME, 'name');
+                    //echo '$fieldName='.$fieldName.' propName='.$prop->getName().' value='.$value;
+                    $html .= $this->getModelSelect($type, $fieldName, $value);    
+                } else {
+                    $html .= $this->getModelSelect($type, $prop->getName(), $value);    
+                }    
             }
             
         } else{
@@ -168,19 +189,31 @@ class DoctrineFormBuilder {
     
     
     public function getModelSelect($modelName, $propertyName, $value) {
-        $data  = new Data($modelName.".json");
-        $ids = $data->readDataFile();
+        //echo "5".$modelName;
+        $entityManager = Config::getEntityManager();
+        $itemRepository = $entityManager->getRepository($modelName);
+        $items = $itemRepository->findAll();
+        //print_r($items);
+        //$data  = new Data($modelName.".json");
+        //$ids = $data->readDataFile();
         $html = '';
         $html .= '<select name="'.$propertyName.'" id="'.$propertyName.'">';
         $html .= '<option value=""></option>';
         //print_r($obj);
-        foreach ($ids["data"] as $key => $item) {
+        //foreach ($ids["data"] as $key => $item) {
+        $props = Model::getPrivates($modelName);
+        $fieldName = $props[1]->getName();        
+        $getter = 'get'.ucfirst($fieldName);
+        //$td .= $row->$m;//$row[$field];//.'?????'.$props[$field]->getValue();
+        //echo $getter.'======';
+        foreach ($items as $key => $item) {
             $selected = '';
             
-            if ($value == $item["id"]) $selected = 'selected';
-            $keys = array_keys($item);
-            
-            $html .= '<option value="'.$item["id"].'" '.$selected.'>'.$item[$keys[1]].'</option>';
+            if ($value == $item->getId()) $selected = 'selected';
+            //$keys = array_keys($item);
+            //$item[$keys[1]]
+            $item_val = $item->$getter();
+            $html .= '<option value="'.$item->getId().'" '.$selected.'>'.$item_val.'</option>';
         }
         $html .= '</select>';
         return $html;
