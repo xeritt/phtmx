@@ -136,8 +136,8 @@ class Table {
         //echo $id;
         
         $id = $row[$field];
-        print_r($ids);
-        echo $id.$type;
+        //print_r($ids);
+        //echo $id.$type;
         $item = $data->getById($id);
         //print_r($item);
         

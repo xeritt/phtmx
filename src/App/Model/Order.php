@@ -19,6 +19,9 @@ class Order {
         $this->id = $id;
     }
     
+    #[ORM\Column(type: 'integer', options : array('comment'=>'Номер'))]
+    private int $number = 0; 
+    
     #[ORM\Column(type: 'datetime', options : array('comment'=>'Время создания'))]
     private DateTime|null $date_create = null; 
 
@@ -54,6 +57,14 @@ class Order {
 
     function getStatus(){ 
         return $this->status;
+    }
+
+    public function getNumber(): int {
+        return $this->number;
+    }
+
+    public function setNumber(int $number): void {
+        $this->number = $number;
     }
 
 }

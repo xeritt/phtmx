@@ -13,7 +13,7 @@ class ModelsController extends BaseController{
     */
     public function generateAction() {
         $generate = new Button("Generate", 'Result', Url::go("Models/savefiles"));
-        echo $generate->getHTML();
+        e::o ($generate->getHTML());
     }
     
     public function savefilesAction() {

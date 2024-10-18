@@ -105,8 +105,8 @@ class BaseController {
         //echo HTML::br();
         //echo HTML::br();
         
-        $html .= HTML::br();
-        $html .= HTML::br();
+        //$html .= HTML::br();
+        //$html .= HTML::br();
         return $html;
     }
     

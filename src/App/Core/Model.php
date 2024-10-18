@@ -232,8 +232,25 @@ class Model {
        if(is_object($class)){
            //$class = ClassUtils::getClass($class);
            $class = $em->getClassMetadata(get_class($class))->getName();
+       } else {
+           if (Php::inTypes($class)) return false;
        }
        return ! $em->getMetadataFactory()->isTransient($class);
    }
    
+    /** Выдает тип из php в тип doctrine
+     * 
+     * @param type $type
+     * @return string
+     */
+    static public function getDoctrineType($type) {
+       switch ($type) {
+           case 'int':
+               return 'integer';
+               break;
+           default:
+               return $type;
+               break;
+       }
+   }
 }
