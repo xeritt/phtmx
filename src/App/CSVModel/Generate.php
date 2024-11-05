@@ -11,6 +11,9 @@ class Generate {
     /** Описание */
     private ?Textarea $info = null;
     
+    /** Группа (для файлов) */
+    private string $group_name = '';
+    
     public function getId(): string {
         return $this->id;
     }

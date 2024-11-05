@@ -6,14 +6,19 @@ class DoctrineController extends BaseController{
         $this->isDoctrine = true;
     }
     
-    public function getTable() {
+    public function getTable($modelName = '', $findBy = []) {
         $html = '';
-        $modelName = $this->getModelName();
+        if ($modelName == '') $modelName = $this->getModelName();
         $entityManager = Config::getEntityManager();
-        $productRepository = $entityManager->getRepository($modelName);
-        $products = $productRepository->findAll();
+        $entityRepository = $entityManager->getRepository($modelName);
         
-        $table = new DoctrineTable($products);
+        if (count($findBy)>0){
+            $entity = $entityRepository->findBy($findBy);
+        } else {
+            $entity = $entityRepository->findAll();
+        }    
+        
+        $table = new DoctrineTable($entity);
         //$modelName = $this->getModelName();
         $table->setModelName($modelName);
         $html .= $table->getHTML();
@@ -21,10 +26,10 @@ class DoctrineController extends BaseController{
         return $html;
     }
     
-    public function getItems() {
+    public function getItems($modelName = '', $findBy = []) {
         $html = '';
-        $modelName = $this->getModelName();
-        $html .= $this->getTable();
+        if ($modelName == '') $modelName = $this->getModelName();
+        $html .= $this->getTable($modelName, $findBy);
         //$html .= $table->getColTableHTML();
 
         $add = new Button("+ ".$modelName, "myDialog", Url::go($modelName."/add"), "loadDialog");

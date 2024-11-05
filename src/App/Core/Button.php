@@ -14,6 +14,7 @@ class Button extends Component{
     private $script;
     private $form;
     private $dialogclose;
+    private $href;
 
     public function __construct($text, $target, $url, $class = "loadText") {
         parent::__construct($class);
@@ -42,6 +43,10 @@ class Button extends Component{
         $this->dialogclose = $dialogclose;
     }
 
+    public function setHref($href): void {
+        $this->href = $href;
+    }
+
     public function getHTML() {
         $id = $this->getId();
         $class = $this->getClass();
@@ -63,6 +68,9 @@ class Button extends Component{
         }
         if (isset($this->dialogclose)) {
             $html .= "data-dialogclose=\"$this->dialogclose\"";    
+        }
+        if (isset($this->href)) {
+            $html .= "data-href=\"$this->href\"";    
         }
         $html .= ">$this->text</button>";
         $this->setHtml($html);

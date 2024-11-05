@@ -260,7 +260,7 @@ class DoctrineTable extends Table{
             }
             $html .= HTML::tag($tr, "tr");
         }
-        $html .= "Footer";
+       // $html .= "Footer";
         /*
         foreach ($this->data as $key => $row) {
             $tr = '';

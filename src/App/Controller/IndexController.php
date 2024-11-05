@@ -20,12 +20,19 @@ class IndexController extends Controller {
             e::o ($del);
             e::o (HTML::link('user.html', 'Users'));
             e::o ($del);
-            e::o (HTML::link('models.html', 'Models'));
+            e::o (HTML::link(Url::go("Models/main"), 'Models'));
             e::o ($del);
             e::o (HTML::link(Url::go("Login/logout"), 'Logout'));
-            
+            e::br();
+            e::o (HTML::link(Url::go("Order/main"), 'Заказы'));
+            e::o ($del);
+            e::o (HTML::link(Url::go("OrderStatus/main"), 'Статусы'));
+            e::o ($del);
+            e::o (HTML::link(Url::go("Wood/main"), 'Товары'));
+            e::o ($del);
+            e::o (HTML::link(Url::go("Service/main"), 'Сервисы'));
         } else {
-            echo HTML::link("login.html", 'Login');
+            e::o (HTML::link("login.html", 'Login'));
             
         }    
     }

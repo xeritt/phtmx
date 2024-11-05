@@ -73,5 +73,22 @@ class HTML {
         return $_GET[$name];
     }
     
+    static public function uuid($prefix = 'div_') {
+        return $prefix.uniqid();
+    }
+    
+    static public function getLoadStyle($className) {
+        $uid = self::uuid('style_');
+        $css = HTML::tag('Загрузка ...', 'style', [
+            'class'=>'loadDynamicStyle', 
+            'data-target'=>$uid, 
+            'data-url'=>Url::go("Css/load",["class"=>$className]),
+            'data-class'=>$className
+            ]
+        );
+        $html = HTML::tag($css, 'div', ['id'=>$uid]);
+        
+        return $html;
+    }
     
 }

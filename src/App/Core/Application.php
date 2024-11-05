@@ -5,7 +5,11 @@
  *
  */
 class Application {
-    //put your code here
+    static private $controller;
+    public static function getController() {
+        return self::$controller;
+    }
+
     public function __construct() {}
 
     public function getAction($params) {
@@ -37,23 +41,30 @@ class Application {
         if ($action != "" && $className != ""){
             if ((method_exists($className, $action))){
                 if (!Access::check()) {
-                    echo Config::getAccessDenidedMessage();
+                    e::o(Config::getAccessDenidedMessage());
                     if (!Access::ifLogin()) echo HTML::link("login.html", "Login");
                     return;
                 }
                 
                 $obj = new $className();
+                self::$controller = &$obj;
                 $res = $obj->$action();
+            } else {
+                e::o('No action '.$action.' in class '. $className);
             }
         } else if ($className != ""){
             if ((method_exists($className, $action))){
             //echo "3";
                 $obj = new $className();
+                self::$controller = &$obj;
                 $res = $obj->indexAction();
+            } else {
+                e::o('No action '.$action.' in class '. $className);
             }    
         } else {                       
             //echo "2";
             $obj = new IndexController();
+            self::$controller = &$obj;
             $res = $obj->indexAction();
         }
         

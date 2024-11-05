@@ -28,6 +28,8 @@ class GenerateController extends BaseController {
         $this->indexAction();
 
         $id = HTML::post("model");
+        $group_name = HTML::post("group_name");
+        
         $tplPath = '../tpl/phtmx/';
         $dstPath = '../src/App/';
 
@@ -41,6 +43,7 @@ class GenerateController extends BaseController {
         $fileControllerDest = $dstPath . "Controller/" . $obj["name"] . "Controller.php";
         file_put_contents($fileControllerDest, $res);
         chmod($fileControllerDest, 0775);
+        if ($group_name!='') chgrp($fileControllerDest, $group_name);
 
         //$this->title($fileControllerDest);
         //echo htmlspecialchars($res);
@@ -57,15 +60,19 @@ class GenerateController extends BaseController {
           //echo htmlspecialchars($res);
           $this->format($fileModelDest, htmlspecialchars($res));
          */
+        
+        /*
         $fileModel = $tplPath . "model.js";
         $fileModelDest = "js/" . strtolower($obj["name"]) . ".js";
         $textModel = file_get_contents($fileModel);
         $res = sprintf($textModel, $obj["name"], $obj["name"], $obj["name"]);
         file_put_contents($fileModelDest, $res);
         chmod($fileModelDest, 0775);
+        if ($group_name!='') chgrp($fileModelDest, $group_name);
+        
         //echo htmlspecialchars($res);
         $this->format($fileModelDest, htmlspecialchars($res));
-
+*/
         $fileModel = $tplPath . "Model.php";
         $fileModelDest = $dstPath . "Model/" . $obj["name"] . ".php";
         $textModel = file_get_contents($fileModel);
@@ -111,6 +118,8 @@ class GenerateController extends BaseController {
         $res = sprintf($textModel, strtolower($obj["name"]), $obj["comment"], $obj["name"], $code);
         file_put_contents($fileModelDest, $res);
         chmod($fileModelDest, 0775);
+        if ($group_name!='') chgrp($fileModelDest, $group_name);
+        
         //echo htmlspecialchars($res);
         $this->format($fileModelDest, htmlspecialchars($res));
         //$obj = $data->getById($id);
@@ -143,6 +152,7 @@ class GenerateController extends BaseController {
     public function orm_sqlAction() {
         //$res = exec('pwd');
         $cmd = 'php ../bin/doctrine orm:schema-tool:update --dump-sql';
+        //$cmd = 'pwd';
         $res = Proc::exec($cmd);
         return "SQL: " . $res;
     }

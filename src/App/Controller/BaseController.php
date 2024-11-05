@@ -80,9 +80,10 @@ class BaseController {
         //$html .= $table->getColTableHTML();
     }
     
-    public function getItems() {
+    public function getItems($modelName = '') {
         $html = '';
-        $modelName = $this->getModelName();
+        if ($modelName == '') $modelName = $this->getModelName();
+        
         $table = $this->getTable();
         $html .= $table->getColTableHTML();
         /*

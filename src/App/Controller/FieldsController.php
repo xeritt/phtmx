@@ -55,7 +55,7 @@ class FieldsController extends BaseController{
         $ids = $data->readDataFile();
         $table = new Table($ids["data"]);
         $table->setModelName($modelName);
-        $buttons = new ActionModelsButtons();
+        $buttons = new ActionFieldsButtons();
         $buttons->createButtons();
         $table->setActionButtons($buttons);
         //$table->createButtons

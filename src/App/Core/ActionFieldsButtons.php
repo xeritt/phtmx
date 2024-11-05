@@ -1,7 +1,7 @@
 <?php
 
 /**  */
-class ActionModelsButtons implements IComponent, IActionButtons{
+class ActionFieldsButtons implements IComponent, IActionButtons{
     private $id;
     private $modelName;
     private $dialogTarget = "myDialog";
@@ -64,6 +64,41 @@ class ActionModelsButtons implements IComponent, IActionButtons{
        $this->dialogTarget = $dialogTarget;
    }
 
+   public function getStyle() {
+        $html = '';
+        
+        CSS::add('.menuButtons', 
+        '
+            position: absolute;
+            padding: 5px;
+            background-color:rgba(0, 0, 0, 0.5);
+        ');
+        
+        $html .= "<style>
+            .menuButtons{
+                position: absolute;
+                padding: 5px;
+                background-color:rgba(0, 0, 0, 0.5);
+                
+            }
+            .menuButtons button{
+                width: 100%;
+                padding: 2px;
+            }
+            .menuButtons button:hover{
+                background-color: bisque;
+            }
+            .toggleArea{
+                border: 0px solid red;
+            }
+            .toggleButton{
+                padding: 2px 5px 2px 5px;
+            }
+
+        </style>";
+        return $html;
+   }
+    
    public function getHTML() {
         /*
         $id = $this->id;
@@ -80,10 +115,32 @@ class ActionModelsButtons implements IComponent, IActionButtons{
         $html .= $del->getHTML();
         */
         $html = '';
-        foreach ($this->getButtons() as $key => $button) {
-            $html .= $button->getHTML();
-        }
         
+        //if (!CSS::isLoad("ActionModelsButtons")){
+          //  $html .= CSS::load("ActionModelsButtons", $this->getStyle()); 
+        //}
+        //echo get_class($this);
+        //$html .= CSS::load(get_class($this), $this->getStyle()); 
+        /*$css = HTML::tag('Загрузка ...', 'style', [
+            'class'=>'loadDynamicText', 
+            'data-target'=>$uid, 
+            'data-url'=>Url::go("Css/load",["class"=>get_class($this)])
+            ]
+        );
+        $html .= HTML::tag($css, 'div', ['id'=>$uid, 'class'=>'dynamicStyle']);
+        */
+        $html .= HTML::getLoadStyle('ActionButtons');
+        $btms = '';
+        foreach ($this->getButtons() as $key => $button) {
+            $btms .= $button->getHTML();
+            //$btms .= HTML::br();
+        }
+        $uid = HTML::uuid();
+        
+        $html .= HTML::tag($btms, 'div', ['id'=>$uid, 'class'=>'hide menuButtons']);
+        $html = HTML::tag('||||', 'button', ['class'=>'toggleButton', 'data-target'=>$uid]).$html;
+        $html = HTML::tag($html, 'div', ['class'=>'toggleArea']);
+        //$html .= '</div>';
         return $html;
     }
 }

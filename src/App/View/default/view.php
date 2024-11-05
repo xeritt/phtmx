@@ -12,9 +12,11 @@
     window.addEventListener('load', (event) => {
         log('The page has fully loaded');
         loadDynamic('#Menu', go('Index/menu'), 0);
-        loadDynamic('#<?php echo $model;?>', go('<?php echo $model;?>/index'), 0);
+        //loadDynamic('#<?php echo $model;?>', go('<?php echo $model;?>/index'), 0);
         //addLoadAll();
         addDynamicElements(500);  
     });
 </script>
-
+<!-- View content -->
+<?php echo $content; ?>
+<!-- End view content -->

@@ -12,7 +12,8 @@
         "doctrine/dbal": "^4",
         "doctrine/annotations": "*",
         "symfony/yaml": "*",
-        "symfony/cache": "^7"
+        "symfony/cache": "^7",
+        "symfony/runtime": "^7.1"
     },
     "autoload": {
         "psr-4": {
@@ -24,8 +25,14 @@
                 "src/App/Annotation", 
                 "src/App/Interface", 
                 "src/App/Model", 
-                "src/App/View"
+                "src/App/View",
+                "src/App/CSVModel"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
         }
     }
 }
