@@ -33,7 +33,9 @@ let classNames = {
   addLinkButtonAll: '.linkButton',
   addActionCloseAll: '.actionClose',
   addActionSubmitAll: '.actionSubmit',
-  addLoadDynamicTextAll: '.loadDynamicText'
+  addLoadDynamicTextAll: '.loadDynamicText',
+  addLoadDynamicToggleButtonAll:'.toggleButton',
+  addloadDynamicStyleAll: 'loadDynamicStyle'
 };
 export function setClassNames(val){ classNames = val; }
 export function getClassNames(){ return classNames; }
@@ -51,11 +53,14 @@ export function addLoadAll() {
     addActionCloseAll();
     addActionSubmitAll();
     
-    addLoadDynamicTextAll();
+    addLoadDynamicTextAll(names.addLoadDynamicTextAll);
+    addLoadDynamicToggleButtonAll(names.addLoadDynamicToggleButtonAll);
+    addLoadDynamicStyleAll(names.loadDynamicStyleAll);
 }
 
-/** Запускает по интервалу сканирование классов
- * если есть запрос на загрузку в переменной requestOnLoad 
+/** Запускает по интервалу сканирование классов для подключения 
+ *  новых обработчиков если есть запрос на загрузку в 
+ *  переменной requestOnLoad 
  * 
  * @param {type} delay интервал между запуском сканирования классов
  * @returns {undefined}
@@ -75,17 +80,27 @@ export function addDynamicElements(delay) {
 export function addListener(itemId, resolve, eventName = 'click') {
     let element = document.getElementById(itemId);
     if (!element) return;
-    if (element.dataset.listener) return;
+    //if (element.dataset.listener == eventName) return;
+    if (element.dataset.listener){
+        if (element.dataset.listener.indexOf(eventName) === 0) return;
+    }    
     element.addEventListener(eventName, resolve);
-    element.dataset.listener = true;
+    if (element.dataset.listener)
+        element.dataset.listener += eventName + ' ';
+    else 
+        element.dataset.listener = eventName + ' ';
 }
 
 export function addListenerElement(element, resolve, eventName = 'click') {
-    if (!element.dataset.listener){
-        log('Element Add Listener = ' + element.id);
-        element.addEventListener(eventName, resolve);
-        element.dataset.listener = true;
+    if (element.dataset.listener){
+        if (element.dataset.listener.indexOf(eventName) === 0) return;
     }    
+    log('Element Add Listener = ' + element.id);
+    element.addEventListener(eventName, resolve);
+    if (element.dataset.listener)
+        element.dataset.listener += ' ' + eventName;
+    else 
+        element.dataset.listener = eventName;
 }
 
 export function prepareParams(button) {
@@ -110,7 +125,15 @@ export function prepareParams(button) {
     }
     return params;
 }
-
+/**
+ * Добавление закрузки текста в container по click
+ * 
+ * @param {type} itemId
+ * @param {type} container
+ * @param {type} url
+ * @param {type} timeout
+ * @returns {undefined}
+ */
 export function addLoadText(itemId, container, url, timeout = 0) {
     let button = document.getElementById(itemId);
     if (!button) return;
@@ -550,14 +573,17 @@ export function addActionSubmitAll(className = '.actionSubmit') {
     });
 }
 
-/*
- <div id="loadDynamicText_id" 
- class="loadDynamicText" 
- data-url="test.html" 
- data-target="htmx"
- data-timeout="0"
- >Load htmx</button>
- <div id="htmx"></div>
+/**
+ *  Отложенная загрузка текста в контейнер по target
+ *  <button id="loadDynamicText_id" 
+ *   class="loadDynamicText" 
+ *   data-url="test.html" 
+ *   data-target="htmx"
+ *   data-timeout="0"
+ *   >Load htmx</button>
+ *   <div id="htmx"></div>
+ * @param {type} className
+ * @returns {undefined}
  */
 export function addLoadDynamicTextAll(className = '.loadDynamicText') {
     //log('addLoadTextAll start');
@@ -579,7 +605,8 @@ export function addLoadDynamicTextAll(className = '.loadDynamicText') {
             .then((response) => response.text())
             .then((data) => {
                 div.innerHTML = data;
-                requestOnLoad = true;
+                setRequestOnLoad(true);
+                //requestOnLoad = true;
                 item.classList.remove(className.replace('.', ''));
             });
     });
@@ -589,3 +616,74 @@ export function addLoadDynamicTextAll(className = '.loadDynamicText') {
     
 }
 
+/**
+ * Подключение кнопок переключателей
+ * @param {type} className
+ * @returns {undefined}
+ */
+export function addLoadDynamicToggleButtonAll(className = '.toggleButton') {
+    //log('addLoadTextAll start');
+    let items = document.querySelectorAll(className);
+    //log(items);
+    items.forEach(async (item) => {
+        addListenerElement(item, (e) => {
+            const toggle = document.getElementById(item.dataset.target);  
+            toggle.classList.toggle('hide'); 
+        });
+    });
+}    
+
+
+
+export function addLoadDynamicStyleAll(className = '.loadDynamicStyle') {
+    log('addLoadDynamicStyleAll start');
+    let loadText = document.querySelectorAll(className);
+    log(loadText);
+    
+    let loadedClasses = [];
+    loadText.forEach(async (item) => {
+        //Если Был уже загружен стиль
+        if (loadedClasses.includes(item.dataset.class)) {
+            item.classList.remove(className.replace('.', ''));
+            return;
+        }
+        loadedClasses.push(item.dataset.class);
+        
+        log('loadDynamicStyle id= ' + item.dataset.class);
+        let div = document.querySelector('#' + item.dataset.target);
+        if (!div) {
+            console.error('No container ' + container + ' to load style');
+            return;
+        }
+        
+        let loadedStyles = document.querySelectorAll('.dynamicStyle');
+        log(loadedStyles);
+        //Проверяем загружался ли ранее этот стиль
+        for (let i = 0; i < loadedStyles.length; i++) {
+            let st = loadedStyles[i];
+            let stuid = item.dataset.class + 'Style';
+            log('Style id = ' + st.id + ' == ' + stuid);
+            if (st.id === stuid) {
+                item.classList.remove(className.replace('.', ''));
+                log('Style >>>> is loaded .....' + item.dataset.class);
+                //notLoad = false;
+                return;
+            }
+        }
+        //await sleep(item.dataset.timeout);
+        fetch(item.dataset.url)
+            //.then((response) => response.json())
+            .then((response) => response.text())
+            .then((data) => {
+                //log('DynamicStyleAll:');
+                div.innerHTML = data;
+                //setRequestOnLoad(true);
+                //requestOnLoad = true;
+                item.classList.remove(className.replace('.', ''));
+            });
+    });
+    
+    
+    //setRequestOnLoad(false);
+    
+}
