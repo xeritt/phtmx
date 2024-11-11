@@ -68,7 +68,7 @@ class Application {
             $res = $obj->indexAction();
         }
         
-        if ($res != false) echo $res;
+        if ($res != false) e::o($res);
     }
     
 }
