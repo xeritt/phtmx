@@ -51,7 +51,7 @@ export function addLoadAll() {
     addLinkButtonAll();
     addLoadDialogAll(names.addLoadDialogAll);
     addActionCloseAll();
-    addActionSubmitAll();
+    addActionSubmitAll(names.addActionSubmitAll);
     
     addLoadDynamicTextAll(names.addLoadDynamicTextAll);
     addLoadDynamicToggleButtonAll(names.addLoadDynamicToggleButtonAll);
@@ -91,6 +91,12 @@ export function addListener(itemId, resolve, eventName = 'click') {
         element.dataset.listener = eventName + ' ';
 }
 
+/**
+ * 
+ * @param {type} element
+ * @param {type} resolve
+ * @param {type} eventName
+ */
 export function addListenerElement(element, resolve, eventName = 'click') {
     if (element.dataset.listener){
         if (element.dataset.listener.indexOf(eventName) === 0) return;
@@ -165,7 +171,9 @@ export function addLoadText(itemId, container, url, timeout = 0) {
                     await sleep(timeout);
                     div.innerHTML = text;
                     //addLoadAll();
-                    requestOnLoad = true;
+                    loadByClick(url);
+                    setRequestOnLoad(true);
+                    //requestOnLoad = true;
                 });
     });
 }
@@ -566,10 +574,43 @@ export function addActionSubmitAll(className = '.actionSubmit') {
               let div = document.getElementById(item.dataset.target);
               div.innerHTML = res;
           }
+          const form = document.getElementById(item.dataset.form);
+          const paths = form.getAttribute("action");
+          log('path=' + paths);
+          //let path = paths.split('?');
+          loadByClick(paths);
           setRequestOnLoad(true);
         });
         
         //addLoadDialog(item.id, item.dataset.target, item.dataset.url, item.dataset.timeout);
+    });
+}
+
+export function loadByClick(paths, className = '.loadByClick') {
+    let path = paths.split('?');
+    if (!path[1]) return;
+    
+    let items = document.querySelectorAll(className);
+    log(items);
+    const params = new URLSearchParams(path[1]);
+    for (const p of params) {
+        log(p);
+    }
+    let model = params.get("model");
+    let action = params.get("action");
+    log('model=' + model);
+    log('action=' + action);
+    items.forEach(async (item) => {
+        if (!item.dataset.models.includes(model)) return;
+        if (!item.dataset.actions.includes(action)) return;
+        log('LoadByClick ' + action);
+        fetch(item.dataset.url)
+            .then((response) => response.text())
+            .then((data) => {
+                let div = document.querySelector('#' + item.id);
+                div.innerHTML = data;
+                setRequestOnLoad(true);
+            });
     });
 }
 

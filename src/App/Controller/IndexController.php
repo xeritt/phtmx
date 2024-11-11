@@ -26,6 +26,8 @@ class IndexController extends Controller {
             e::br();
             e::o (HTML::link(Url::go("Order/main"), 'Заказы'));
             e::o ($del);
+            e::o (HTML::link(Url::go("Client/main"), 'Клиенты'));
+            e::o ($del);
             e::o (HTML::link(Url::go("OrderStatus/main"), 'Статусы'));
             e::o ($del);
             e::o (HTML::link(Url::go("Wood/main"), 'Товары'));

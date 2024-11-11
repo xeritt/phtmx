@@ -12,11 +12,17 @@ class DoctrineFormBuilder {
     private $id;
     private $legend;
     private $style;
+    private $submit;
+    private $submitId;
     
     public function __construct($model, $action) {
         $this->model = $model;
         $this->action = $action;
-        $this->id = uniqid();
+        $reflect = new ReflectionClass($model);
+        $modelName = URL::getModel();
+        $actionName = URL::getAction();
+        $this->id = $actionName.$modelName.'Form';//uniqid();
+        $this->submitId =  $actionName.$modelName.'Submit';
         //$this->id = 
     }
 
@@ -43,12 +49,20 @@ class DoctrineFormBuilder {
         return null;
     }
     */
-    public function getSubmit($text) {
-        $submit = new Button($text, Url::getModel(), 'index.php', 'actionSubmit');
-        $submit->setForm($this->getId());
-        return $submit;
+    public function getSubmitId() {
+        return $this->submitId;
     }
-    
+
+    public function createSubmit($text) {
+        $this->submit = new Button($text, Url::getModel(), 'index.php', 'actionSubmit');
+        $this->submit->setForm($this->getId());
+        $this->submit->setId($this->getSubmitId());
+        return $this->submit;
+    }
+    public function getSubmit() {
+        return $this->submit;
+    }
+
     public function setStyle($style): void {
         $this->style = $style;
     }
@@ -83,7 +97,7 @@ class DoctrineFormBuilder {
     public function getForm() {
         $html = '';
         if (isset($this->style)){
-            
+            $html .= $this->style;
         } else {
             $html .= $this->getDefaultStyle();
         }    

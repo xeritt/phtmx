@@ -20,6 +20,12 @@ class Url {
         return $url.'?'.self::$modelName.'='.$controller.'&'.self::$actionName.'='.$action;
     }
     
+    /**
+     * Формирует путь с параметрами
+     * @param type $controllerAndAction Контроллер / действие
+     * @param type $params
+     * @return type
+     */
     static public function go($controllerAndAction, $params = []) {
         list($controller, $action) = explode('/', $controllerAndAction);
         $paramsStr = '';

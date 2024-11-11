@@ -8,7 +8,8 @@ class BaseController {
     
     //public $modelName = 'Book';
     public $isDoctrine = false;
-    
+    public $form;
+
     public function getModelName() {
         return Url::getModel();
     }
@@ -29,12 +30,12 @@ class BaseController {
         //var_dump($item);
         //exit();
         if ($this->isDoctrine){
-            $form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/new"));
+            $this->form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/new"));
         } else {
-            $form = new FormBuilder($item, Url::go($this->getModelName()."/new"));//"index.php?page=Book&action=new");
+            $this->form = new FormBuilder($item, Url::go($this->getModelName()."/new"));//"index.php?page=Book&action=new");
         }    
-        e::o ($form->getForm());
-        $submit = $form->getSubmit("Добавить");
+        e::o ($this->form->getForm());
+        $submit = $this->form->createSubmit("Добавить");
         $submit->setDialogclose('myDialog');
         e::o ($submit->getHTML());
         $close = new Button("Закрыть", "myDialog", "index.php", "actionClose");
@@ -158,20 +159,20 @@ class BaseController {
                     echo $this->getModelName()."id=".$id." No found.\n";
                     //exit(1);
                 } 
-            $form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
+            $this->form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
         } else {
             $data  = new Data($this->getModelFileName());
             //$ids = $data->readDataFile();
             $byId = $data->readDataFileById();
             $obj = $byId[$id];//$data->getById($id);
             $item = Model::loadModel($this->getModelName(), $obj);//new Book($id, $obj["name"], $obj["article"]);
-            $form = new FormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
+            $this->form = new FormBuilder($item, Url::go($this->getModelName()."/update", ["id"=>$id]));
         }
         
-        $form->setLegend("Edit id=".$id);
-        e::o ($form->getForm());
+        $this->form->setLegend("Edit id=".$id);
+        e::o ($this->form->getForm());
         
-        $submit = $form->getSubmit("Сохранить");
+        $submit = $this->form->createSubmit("Сохранить");
         $submit->setDialogclose('myDialog');
         
         $close = new Button("Закрыть", "myDialog", "index.php", "actionClose");

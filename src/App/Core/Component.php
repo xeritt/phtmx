@@ -6,15 +6,19 @@
  */
 class Component {
     
-    private $id;
-    private $class;
-    private $html;
+    protected $id;
+    protected $class;
+    protected $html;
     
     public function __construct($class) {
         $this->class = $class;
         $this->id = uniqid();
     }
     
+    public function setId($id): void {
+        $this->id = $id;
+    }
+
     public function getId() {
         return $this->id;
     }

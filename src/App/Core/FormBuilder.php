@@ -12,6 +12,7 @@ class FormBuilder {
     private $id;
     private $legend;
     private $style;
+    private $submit;
     
     public function __construct($model, $action) {
         $this->model = $model;
@@ -44,9 +45,9 @@ class FormBuilder {
     }
     */
     public function getSubmit($text) {
-        $submit = new Button($text, Url::getModel(), 'index.php', 'actionSubmit');
-        $submit->setForm($this->getId());
-        return $submit;
+        $this->submit = new Button($text, Url::getModel(), 'index.php', 'actionSubmit');
+        $this->submit->setForm($this->getId());
+        return $this->submit;
     }
     
     public function setStyle($style): void {

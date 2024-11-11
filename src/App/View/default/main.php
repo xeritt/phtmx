@@ -14,7 +14,7 @@
         loadDynamic('#Menu', go('Index/menu'), 0);
         loadDynamic('#<?php echo $model;?>', go('<?php echo $model;?>/index'), 0);
         //addLoadAll();
-        addDynamicElements(500);  
+        addDynamicElements(100);  
     });
 </script>
 
