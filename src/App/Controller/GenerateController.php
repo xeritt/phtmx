@@ -157,9 +157,10 @@ class GenerateController extends BaseController {
         return "SQL: " . $res;
     }
 
-    public function getItems() {
+    public function getItems($modelName = '') {
         $html = parent::getItems();
-        $modelName = $this->getModelName();
+        if ($modelName == '') $modelName = $this->getModelName();
+        //$modelName = $this->getModelName();
         $sql = new Button("SQL ", "Result", Url::go($modelName . "/orm_sql"), "loadText");
         $html .= $sql->getHTML();
         $sql = new Button("Update Database ", "Result", Url::go($modelName . "/orm_update"), "loadText");

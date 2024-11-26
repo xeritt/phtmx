@@ -13,9 +13,9 @@ class ActionButtons implements IComponent, IActionButtons{
         $controller = Application::getController();
         $action = Url::getAction();
         $this->buttons = [];
-        //echo $action;
+        echo $action;
         if (isset($controller->actionButtons[$action])){
-            //echo "?????";
+            echo "?????";
             foreach ($controller->actionButtons[$action] as $func){
                 $this->buttons[] = call_user_func($func, $id);
             }

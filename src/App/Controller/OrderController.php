@@ -118,7 +118,7 @@ class OrderController extends DoctrineController{
         $html = '';
         
         $order_id = HTML::get('order_id');
-        //$html .= 'view id = '.$order_id;
+        $html .= 'view id = '.$order_id;
         
         $service = $this->getOrderServices($order_id);
         $html .= $service['html'];
@@ -130,7 +130,7 @@ class OrderController extends DoctrineController{
         $html .= $this->orderSummaryAction();
         
         $view = new View();
-        $title = 'Заказ #'.$order_id;
+        $title = 'Заказ #'.$id;
         $content = $view->render('default/view', ['model'=>$this->getModelName(), 'content'=>$html]);
         e::o ($view->renderLayout('default/main', ['title'=>$title, 'content'=>$content]));
     }

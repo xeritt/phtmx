@@ -13,6 +13,7 @@ class FormBuilder {
     private $legend;
     private $style;
     private $submit;
+    private $submitId;
     
     public function __construct($model, $action) {
         $this->model = $model;
@@ -181,5 +182,16 @@ class FormBuilder {
         }
         $html .= '</select>';
         return $html;
+    }
+    
+    public function getSubmitId() {
+        return $this->submitId;
+    }
+        
+    public function createSubmit($text) {
+        $this->submit = new Button($text, Url::getModel(), 'index.php', 'actionSubmit');
+        $this->submit->setForm($this->getId());
+        $this->submit->setId($this->getSubmitId());
+        return $this->submit;
     }
 }
