@@ -11,6 +11,19 @@ class ModelsController extends BaseController{
         e::o ($this->getItems($modelName));
     }
     */
+    public $actionButtons = [];
+    
+    public function __construct() {
+      //  parent::__construct();
+
+        $this->actionButtons['index'][] = function ($id){
+            $modelName = 'Fields';//Url::getModel();
+            $view = new Button("Поля", $modelName, '', 'linkButton');
+            $view->setHref(Url::go($modelName."/main", ["findBy[model]"=>$id]));
+            return $view;
+        };
+    }
+    
     public function generateAction() {
         $generate = new Button("Generate", 'Result', Url::go("Models/savefiles"));
         e::o ($generate->getHTML());
@@ -37,5 +50,12 @@ class ModelsController extends BaseController{
         //echo $text;
         return $res;
         
+    }
+    
+    public function mainAction() {
+        $view = new View();
+        $title = 'Title Base Controller';
+        $html = $view->render('Models/main', ['model'=>$this->getModelName()]);
+        echo $view->renderLayout('default/main', ['title'=>$title, 'content'=>$html]);
     }
 }

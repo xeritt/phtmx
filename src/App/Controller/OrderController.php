@@ -21,8 +21,8 @@ class OrderController extends DoctrineController{
         $sumService = $this->orderServiceSum($order_id);
         
         $summary = (int)($sumWood + $sumService);
-        $action = URL::getAction();
-        $model = URL::getModel();
+        //$action = URL::getAction();
+        //$model = URL::getModel();
         $html = 'ИТОГО: '.$summary.' руб.';
         return HTML::tag($html, 'div', [
             'id'=>'orderSummary', 

@@ -17,6 +17,44 @@ export function go(route){
     //log(res);
     return res;
 }
+/**
+ * Функция для отбора параметров кроме model и action
+ * @param {type} p
+ * @returns {unresolved}
+ */
+function getParamsWithoutModelAction(p) {
+    if (p[0] != 'model' && p[0] != 'action')
+        return p;
+    return null;
+}
+
+/**
+ * Переход по ссылке с параметраметрами 
+ * goParams('Index/edit')
+ * @param {type} route
+ * @returns {undefined|String}
+ */
+export function goParams(route){
+    const paths = window.location.search;
+    let path = paths.split('?');
+    if (!path[1]) return;
+    
+    const params = new URLSearchParams(path[1]);
+    //log(params);
+    let entries = params.entries().filter(getParamsWithoutModelAction);
+    
+    let paramsStr = '';
+    //log('PaRAMMMSSSSS------------->');
+    for (const p of entries) {
+        //log(p);
+        //log(p[0]+'|'+p[1]);
+        paramsStr += '&' + p[0] + '=' + p[1];//params.get("model");
+    }
+    let str = route.split('/');
+    //let res = 'index.php?model=' + str[0] + '&action=' + str[1];
+    let res = 'index.php?model=' + str[0] + '&action=' + str[1] + paramsStr;
+    return res;
+}
 
 /**
  * 

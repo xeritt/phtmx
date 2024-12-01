@@ -52,7 +52,15 @@ class FieldsController extends BaseController{
     public function getTable() {
         $modelName = $this->getModelName();
         $data  = new Data($this->getModelFileName());
-        $ids = $data->readDataFile();
+        $findBy = HTML::get('findBy');
+        print_r($_GET);
+        if (isset($findBy)){
+            echo "???????????";
+            $ids = $data->readDataFileFindBy($findBy);    
+        } else {
+            echo "!!!!!";
+            $ids = $data->readDataFile();    
+        }
         $table = new Table($ids["data"]);
         $table->setModelName($modelName);
         $buttons = new ActionFieldsButtons();

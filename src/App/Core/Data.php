@@ -75,6 +75,41 @@ class Data {
         return $dataId;//$this->data;
     }
     
+    /**
+     * Загружает данные в data по массиву поиска findBy и 
+     * Возвращает массив данных где ключи id
+     * @return array
+     */
+    public function readDataFileFindBy($findBy = []) {
+        $filename = $this->getDataFileName();
+        $this->data = ["data" => []];
+        //$dataId = [];
+        if (file_exists($filename)){
+            $json = file_get_contents($filename);
+            $data = json_decode($json, true);
+            
+            foreach ($data["data"] as $dataKey => $dataValue) {
+                
+                if (count($findBy)>0){
+                    foreach ($findBy as $findByKey => $findByValue) {
+                        //print_r($data["data"][$dataKey]);//.'<br />';
+                        //echo $findByKey.'='.$findByValue;
+                        //echo $data["data"][$dataKey][$findByKey].'##';
+                        if ($data["data"][$dataKey][$findByKey] == $findByValue){
+                            $this->data["data"][] = $data["data"][$dataKey];
+                        }
+                    }    
+                } else {
+                    $this->data["data"][] = $data["data"][$dataKey];
+                //}
+                //if ($value["id"] == $id){    
+                //$dataId[$value["id"]] = $this->data["data"][$key];
+                }
+            }    
+        } 
+        return $this->data;//$dataId;
+    }
+    
     public function saveDataFile() {
         $filename = $this->getDataFileName();
         $json = json_encode($this->data);
