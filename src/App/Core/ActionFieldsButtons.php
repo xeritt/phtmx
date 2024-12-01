@@ -11,11 +11,13 @@ class ActionFieldsButtons implements IComponent, IActionButtons{
     public function createButtons() {
         $id = $this->id;
         $getModelName = $this->modelName;
+        $params = Url::getParamsWithoutModelAction(HTML::getParams());
+        $params = array_merge(["id"=>$id], $params);
         
-        $up = new Button("Up", $getModelName, Url::go($getModelName."/up",["id"=>$id]));
-        $down = new Button("Down", $getModelName, Url::go($getModelName."/down",["id"=>$id]));
-        $edit = new Button("Edit", $this->dialogTarget, Url::go($getModelName."/edit",["id"=>$id]), 'loadDialog');
-        $del = new Button("Del", $getModelName, Url::go($getModelName."/del",["id"=>$id]));
+        $up = new Button("Up", $getModelName, Url::go($getModelName."/up", $params));
+        $down = new Button("Down", $getModelName, Url::go($getModelName."/down", $params));
+        $edit = new Button("Edit", $this->dialogTarget, Url::go($getModelName."/edit", $params), 'loadDialog');
+        $del = new Button("Del", $getModelName, Url::go($getModelName."/del", $params));
         $del->setConfirm("Вы хотите удалить id=".$id);
 
         $this->buttons = [

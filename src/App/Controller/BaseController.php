@@ -29,10 +29,14 @@ class BaseController {
         //$form = new FormBuilder($book, "Book/new");
         //var_dump($item);
         //exit();
+        //print_r(HTML::getParams());
+        $params = Url::getParamsWithoutModelAction(HTML::getParams());
+        //print_r($params);
         if ($this->isDoctrine){
-            $this->form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/new"));
+            //$params = Url::getParamsWithoutModelAction(HTML::getParams());
+            $this->form = new DoctrineFormBuilder($item, Url::go($this->getModelName()."/new", $params));
         } else {
-            $this->form = new FormBuilder($item, Url::go($this->getModelName()."/new"));//"index.php?page=Book&action=new");
+            $this->form = new FormBuilder($item, Url::go($this->getModelName()."/new", $params));//"index.php?page=Book&action=new");
         }    
         e::o ($this->form->getForm());
         $submit = $this->form->createSubmit("Добавить");
@@ -102,7 +106,8 @@ class BaseController {
         //echo HTML::br();
 
         //$add = new Button("Add", 'main', "load.php?page=Book&action=add");
-        $add = new Button("+ ".$modelName, "myDialog", Url::go($modelName."/add"), "loadDialog");
+        $params = Url::getParamsWithoutModelAction(HTML::getParams());
+        $add = new Button("+ ".$modelName, "myDialog", Url::go($modelName."/add", $params), "loadDialog");
         $html .= $add->getHTML();
         //echo HTML::br();
         //echo HTML::br();

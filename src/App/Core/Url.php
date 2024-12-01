@@ -30,7 +30,13 @@ class Url {
         list($controller, $action) = explode('/', $controllerAndAction);
         $paramsStr = '';
         foreach ($params as $key => $value) {
-            $paramsStr .= '&'.$key.'='.$value;
+            if (is_array($value)){
+                foreach ($value as $keyArr => $valueArr) {
+                    $paramsStr .= '&'.$key.'['.$keyArr.']'.'='.$valueArr;
+                }
+            } else {
+                $paramsStr .= '&'.$key.'='.$value;
+            }    
         }
         //return 'index.php?page='.$controller.'&action='.$action.$paramsStr;
         return 'index.php?'.self::$modelName.'='.$controller.'&'.self::$actionName.'='.$action.$paramsStr;
@@ -64,6 +70,14 @@ class Url {
         self::$modelName = $modelName;
     }
 
-
+    public static function getParamsWithoutModelAction($params = []) { 
+        $newParams = [];
+        foreach ($params as $key => $value) {
+            if ($key != self::getActionName() && $key != self::getModelName()){
+                $newParams[$key] = $value;
+            }
+        }
+        return $newParams;
+    }
     
 }
