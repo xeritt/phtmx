@@ -1,17 +1,18 @@
 #!/bin/bash
-
-echo "DOCK v.1.0"
+VERSION=1.1
+echo "DOCK v.$VERSION"
 echo "Help programm with docker"
 echo "Copy to project dir and run ./dock"
 
 function mainMenu {
-	OPTION=$(whiptail --title  "Система управения docker" --menu  "Команды" 20 60 10 \
+	OPTION=$(whiptail --title  "Система управения docker $VERSION" --menu  "Команды" 20 60 10 \
 	"composeup" "Поднять compose" \
 	"composedown" "Остановить compose" \
+	"composeimages" "Список образов" \
 	"ps" "Список контейнеров" \
 	"psshort" "Список контейнеров (ID NAME)" \
 	"stop" "Остановить контейнер" \
-	"images" "Список образов" \
+	"images" "Список всех образов" \
 	"info" "Информация" \
 	"version" "Версия" \
 	"build" "Собрать из Dockerfile" \
@@ -89,6 +90,13 @@ function main {
 			pressKey
 			continue
 		fi
+
+		if [ $OPTION = "composeimages" ];  then
+			docker compose images
+			pressKey
+			continue
+		fi
+
 		##mainFunctions
 	done
 }

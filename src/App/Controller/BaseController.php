@@ -125,7 +125,9 @@ class BaseController {
     }
     
     public function updateAction() {
+        
         if ($this->isDoctrine){
+            echo $this->isDoctrine.'--------';
             try {
                     $entityManager = Config::getEntityManager();
                     $item = Model::loadModel($this->getModelName(), HTML::postParams(), 'edit');

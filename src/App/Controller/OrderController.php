@@ -75,7 +75,12 @@ class OrderController extends DoctrineController{
         $items = $repository->findBy(['order'=>$order_id]);
         $sum = 0;
         foreach ($items as $row) {
-            $sum += $row->getWood()->getCost() * $row->getCount();
+            //Если цена 0 то берем цену из товара
+            if ($row->getCost() < 0){
+                $sum += $row->getWood()->getCost() * $row->getCount();
+            } else {
+                $sum += $row->getCost() * $row->getCount();
+            }    
         }
         return $sum;
     }

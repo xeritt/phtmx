@@ -30,6 +30,9 @@ class OrderWood {
     #[ORM\Column(type: 'integer', options : array('comment'=>'Кол-во'))]
     private int $count = 0; 
 
+    #[ORM\Column(type: 'integer', options : array('comment'=>'Цена'))]
+    private int $cost = 0; 
+
     function setOrder($orderValue){ 
         $this->order = $orderValue;
     }
@@ -42,6 +45,10 @@ class OrderWood {
         $this->count = $countValue;
     }
 
+    function setCost($costValue){ 
+        $this->cost = $costValue;
+    }
+
     function getOrder(){ 
         return $this->order;
     }
@@ -52,6 +59,10 @@ class OrderWood {
 
     function getCount(){ 
         return $this->count;
+    }
+
+    function getCost(){ 
+        return $this->cost;
     }
 
 }
