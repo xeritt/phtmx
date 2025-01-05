@@ -9,6 +9,7 @@ class BaseController {
     //public $modelName = 'Book';
     public $isDoctrine = false;
     public $form;
+    public $title = 'Base Controller';
 
     public function getModelName() {
         return Url::getModel();
@@ -222,8 +223,20 @@ class BaseController {
     
     public function mainAction() {
         $view = new View();
-        $title = 'Title Base Controller';
-        $html = $view->render('default/main', ['model'=>$this->getModelName()]);
-        echo $view->renderLayout('default/main', ['title'=>$title, 'content'=>$html]);
+        //$this->title = 'Title Base Controller';
+        $m = $this->getModelName();
+        ///echo "Model:".$m;
+        if ($view->view_exists($m.'/main')){
+            //echo "render:".$m.'/main';
+            $html = $view->render($m.'/main', ['model'=>$m]);
+        } else {
+            $html = $view->render('default/main', ['model'=>$m]);
+        }    
+        
+        if ($view->layout_exists($m.'/main')){
+            e::o($view->renderLayout($m.'/main', ['title'=>$title, 'content'=>$html]));    
+        } else {
+            e::o($view->renderLayout('default/main', ['title'=>$title, 'content'=>$html]));    
+        }
     }
 }

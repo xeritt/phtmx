@@ -1,4 +1,3 @@
-<div class="Flash" id="Flash"></div>
 <div class="Menu" id="Menu"></div>
 <div class="<?= $model; ?>" id="<?= $model;?>"></div>
 

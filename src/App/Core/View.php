@@ -6,15 +6,28 @@
  */
 class View {
     
-    function render($view_path, $params){
+    function view_exists($view){
         $path  = '../'.Config::$view_path;
-        $path .= $view_path.'.php';
+        $path .= $view.'.php';
+        //echo "path:".$path.'??'.file_exists($path);
+        return file_exists($path);
+    }
+
+    function layout_exists($layout){
+        $path  = '../'.Config::$layout_path;
+        $path .= $layout.'.php';
+        return file_exists($path);
+    }
+    
+    function render($view, $params){
+        $path  = '../'.Config::$view_path;
+        $path .= $view.'.php';
         return $this->get($path, $params);
     }
     
-    function renderLayout($layout_path, $params){
+    function renderLayout($layout, $params){
         $path  = '../'.Config::$layout_path;
-        $path .= $layout_path.'.php';
+        $path .= $layout.'.php';
         return $this->get($path, $params);
     }
     

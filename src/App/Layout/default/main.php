@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/css/main.css">
     </head>
     <body>
+        <div class="Flash" id="Flash"></div>
         <?php echo $content; ?>
     </body>
 </html>
