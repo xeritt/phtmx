@@ -9,7 +9,17 @@ class BaseController {
     //public $modelName = 'Book';
     public $isDoctrine = false;
     public $form;
-    public $title = 'Base Controller';
+    private string $title = 'Base Controller';
+    
+    public function __construct() {}
+    
+    public function getTitle(): string {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void {
+        $this->title = $title;
+    }
 
     public function getModelName() {
         return Url::getModel();
@@ -225,6 +235,7 @@ class BaseController {
         $view = new View();
         //$this->title = 'Title Base Controller';
         $m = $this->getModelName();
+        $title = $this->getTitle();
         ///echo "Model:".$m;
         if ($view->view_exists($m.'/main')){
             //echo "render:".$m.'/main';

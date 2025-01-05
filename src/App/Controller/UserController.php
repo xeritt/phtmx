@@ -6,7 +6,11 @@
  *
  */
 class UserController extends BaseController{
-    //put your code here
+    
+    public function __construct() {
+        parent::__construct();
+        $this->setTitle("Пользователи");
+    }    
     
     public function newAction() {
         
