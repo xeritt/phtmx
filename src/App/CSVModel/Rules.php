@@ -18,11 +18,12 @@ class Rules {
     /** События */
     private ?Textarea $actions = null;
     
+    /*
     public function getRules() {
         return [
-          "admin" => ['index', 'new', 'add', 'del', 'update', 'edit']  
+          "admin" => ['index', 'main', 'new', 'add', 'del', 'update', 'edit']  
         ];
-    }
+    }*/
     /*
     public function __construct(string $id = '', string $login = '', $controller = '', $actions = '') {
         $this->id = $id;

@@ -16,7 +16,8 @@ class IndexController extends Controller {
             $del = ' | ';
             e::o (HTML::link('index.html', 'Index'));
             e::o ($del);
-            e::o (HTML::link('rules.html', 'Rules'));
+            //e::o (HTML::link('rules.html', 'Rules'));
+            e::o (HTML::link(Url::go("Rules/main"), 'Правила'));
             e::o ($del);
             //e::o (HTML::link('user.html', 'Users'));
             e::o (HTML::link(Url::go("User/main"), 'Пользователи'));

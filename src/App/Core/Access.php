@@ -116,9 +116,11 @@ class Access {
         $action = Url::getAction();
         
         if ((method_exists($controllerName, "getRules"))){
+            //echo "Check controller";
             return self::checkController();
         } else {
             if (Access::ifLogin()){
+                //echo "Check Rules Model";
                 return self::checkRulesModel();
             } else{
                 $data  = new Data(self::$rulesModel.".json");
