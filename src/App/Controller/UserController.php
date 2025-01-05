@@ -27,7 +27,7 @@ class UserController extends BaseController{
     public function getRules() {
         return [
           //"user" => ['index', 'new'],
-          "admin" => ['index', 'new', 'edit', 'add', 'update', 'edit', 'del']
+          "admin" => ['index', 'main','new', 'edit', 'add', 'update', 'edit', 'del']
         ];
     }
 }

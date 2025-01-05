@@ -18,7 +18,8 @@ class IndexController extends Controller {
             e::o ($del);
             e::o (HTML::link('rules.html', 'Rules'));
             e::o ($del);
-            e::o (HTML::link('user.html', 'Users'));
+            //e::o (HTML::link('user.html', 'Users'));
+            e::o (HTML::link(Url::go("User/main"), 'Пользователи'));
             e::o ($del);
             e::o (HTML::link(Url::go("Models/main"), 'Models'));
             e::o ($del);
@@ -34,8 +35,8 @@ class IndexController extends Controller {
             e::o ($del);
             e::o (HTML::link(Url::go("Service/main"), 'Сервисы'));
         } else {
-            e::o (HTML::link("login.html", 'Login'));
-            
+            e::o(Application::getLoginBtm()->getHTML());
+            //e::o (HTML::link("login.html", 'Login'));
         }    
     }
 

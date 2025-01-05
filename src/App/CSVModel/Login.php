@@ -1,10 +1,7 @@
 <?php
 
 
-/**
- * Description of User
- *
- */
+/** Login */
 class Login {
     
     private string $id;

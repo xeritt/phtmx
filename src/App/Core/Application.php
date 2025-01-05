@@ -25,6 +25,10 @@ class Application {
     public function getClassName() {
         return get_class($this);
     }
+    
+    static public function getLoginBtm() {
+        return new Button('Login', 'myDialog', Url::go('Login/in'), 'loadDialog');
+    }
 
     public function run() {
         //$params = $this->getParams();
@@ -44,7 +48,8 @@ class Application {
                     e::o(Config::getAccessDenidedMessage());
                     //if (!Access::ifLogin()) echo HTML::link("login.html", "Login");
                     if (!Access::ifLogin()) {
-                        $loginBtn = new Button('Login', 'myDialog', Url::go('Login/in'), 'loadDialog');
+                        //$loginBtn = new Button('Login', 'myDialog', Url::go('Login/in'), 'loadDialog');
+                        $loginBtn = self::getLoginBtm();
                         e::o($loginBtn->getHTML());
                     }
                     return;

@@ -115,7 +115,10 @@ class FormBuilder {
             $row = '';
             if ('id' == $prop->getName()){
                 $typeInput = 'hidden';
-            } 
+            }
+            if ('password' == $prop->getName() || 'passwordReply' == $prop->getName()){
+                $typeInput = 'password';
+            }
             $comment = $prop->getDocComment();
             $row .= '<label for="'.$prop->getName().'">';
             if (isset($comment)){
