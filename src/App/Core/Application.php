@@ -42,7 +42,11 @@ class Application {
             if ((method_exists($className, $action))){
                 if (!Access::check()) {
                     e::o(Config::getAccessDenidedMessage());
-                    if (!Access::ifLogin()) echo HTML::link("login.html", "Login");
+                    //if (!Access::ifLogin()) echo HTML::link("login.html", "Login");
+                    if (!Access::ifLogin()) {
+                        $loginBtn = new Button('Login', 'myDialog', Url::go('Login/in'), 'loadDialog');
+                        e::o($loginBtn->getHTML());
+                    }
                     return;
                 }
                 

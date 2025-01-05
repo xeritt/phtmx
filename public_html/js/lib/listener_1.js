@@ -616,6 +616,7 @@ export function addActionSubmitAll(className = '.actionSubmit') {
           const paths = form.getAttribute("action");
           log('path=' + paths);
           //let path = paths.split('?');
+          //Переходим по клику если задан data-url
           loadByClick(paths);
           setRequestOnLoad(true);
         });
@@ -624,6 +625,13 @@ export function addActionSubmitAll(className = '.actionSubmit') {
     });
 }
 
+/*
+ * Загрузка контента data-url по клику в data-target=item.id
+ * проверка model и action из path
+ * @param {type} paths
+ * @param {type} className
+ * @returns {undefined}
+ */
 export function loadByClick(paths, className = '.loadByClick') {
     let path = paths.split('?');
     if (!path[1]) return;

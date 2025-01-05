@@ -23,6 +23,10 @@ class Button extends Component{
         $this->target = $target;
     }
 
+    public function setTarget($target): void {
+        $this->target = $target;
+    }
+
     public function setTimeout($timeout): void {
         $this->timeout = $timeout;
     }
@@ -39,6 +43,11 @@ class Button extends Component{
         $this->form = $form;
     }
     
+    /**
+     * Добавляет фукцию закрытия диалога по id в dialogclose
+     * @param string $dialogclose
+     * @return void
+     */
     public function setDialogclose($dialogclose): void {
         $this->dialogclose = $dialogclose;
     }

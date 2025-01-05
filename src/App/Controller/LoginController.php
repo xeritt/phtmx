@@ -14,17 +14,19 @@ class LoginController extends Controller{
         }
             
         $model = $this->getModelName();
-        echo "?????".$model;
+        //echo "?????".$model;
         $item = $this->newItem();
         //$form = new FormBuilder($book, "Book/new");
         $form = new FormBuilder($item, Url::go($model."/new"));//"index.php?page=Book&action=new");
-        echo $form->getForm();
+        e::o($form->getForm());
         
         $submit = $form->getSubmit("Войти");
-        //$submit->setDialogclose('myDialog');
-        echo $submit->getHTML();
-        /*$close = new Button("Закрыть", "myDialog", "index.php", "actionClose");
-        echo $close->getHTML();*/
+        $submit->setTarget('Flash');
+        $submit->setDialogclose('myDialog');
+        e::o($submit->getHTML());
+        
+        $close = new Button("Закрыть", "myDialog", "index.php", "actionClose");
+        e::o($close->getHTML());
     }
     
     public function newAction() {
@@ -60,20 +62,20 @@ class LoginController extends Controller{
     }
     
     public function printAction() {
-        echo "????";
+        //echo "????";
         print_r($_SESSION);
         Access::printSession();
     }
     
     public function indexAction() {
-        echo "Login";
+        //echo "Login";
         //print_r($_SESSION);
         Access::printSession();
-        echo HTML::link("index.html", "index");
+        e::o(HTML::link("index.html", "index"));
     }
     
     public function logoutAction() {
         Access::logout("admin");
-        echo HTML::link("index.html", "index");
+        e::o(HTML::link("index.html", "index"));
     }
 }
