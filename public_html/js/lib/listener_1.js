@@ -112,6 +112,7 @@ export function addDynamicElements(delay) {
             setRequestOnLoad(false);
         }    
     };
+    //resolve();
     setInterval(resolve, delay);
 }
 
@@ -230,7 +231,7 @@ export async function loadDynamic(container, url, timeout = 0) {
         console.error('No container ' + container + ' to load');
         return;
     }
-    await sleep(timeout);
+    if (timeout>0) await sleep(timeout);
     fetch(url)
             //.then((response) => response.json())
             .then((response) => response.text())
